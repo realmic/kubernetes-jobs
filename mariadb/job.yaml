@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mariadb-backup
+  labels:
+    version: 1.0.0
+    task: backup
+spec:
+  template:
+    metadata:
+      name: mariadb-backup
+      labels:
+        version: 1.0.0
+        task: backup
+    spec:
+      containers:
+      - name: mariadb-backup
+        image: realmic/mariadb-backup:1.0.0
+        env:
+        - name: BACKUP_HOST
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-backup
+              key: backup-host
+        - name: BACKUP_USER
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-backup
+              key: backup-user
+        - name: BACKUP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-backup
+              key: backup-password
+        volumeMounts:
+        - mountPath: /mnt/gluster/
+          name: backups
+      volumes:
+      - name: backups
+        glusterfs:
+          endpoints: glusterfs
+          path: backups
+          readOnly: false
+      restartPolicy: OnFailure
