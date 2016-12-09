@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gogs-backup
+  labels:
+    version: 1.2.0
+    task: backup
+spec:
+  template:
+    metadata:
+      name: gogs-backup
+      labels:
+        version: 1.2.0
+        task: backup
+    spec:
+      containers:
+      - name: gogs-backup
+        image: realmic/file-backup:1.2.0
+        env:
+        - name: BACKUP_NAME
+          value: "gogs"
+        volumeMounts:
+        - mountPath: /mnt/gluster/
+          name: backups
+        - mountPath: /mnt/source/
+          name: gogs
+      volumes:
+      - name: backups
+        glusterfs:
+          endpoints: glusterfs
+          path: backups
+          readOnly: false
+      - name: gogs
+        glusterfs:
+          endpoints: glusterfs
+          path: gogs
+          readOnly: true
+      restartPolicy: Never

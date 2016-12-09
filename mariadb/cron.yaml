@@ -3,7 +3,7 @@ kind: ScheduledJob
 metadata:
   name: mariadb-backup
   labels:
-    version: 1.0.0
+    version: 1.1.0
     task: backup
 spec:
   schedule: "0 2 * * WED,SAT"
@@ -12,19 +12,19 @@ spec:
     metadata:
       name: mariadb-backup
       labels:
-        version: 1.0.0
+        version: 1.1.0
         task: backup
     spec:
       template:
         metadata:
           name: mariadb-backup
           labels:
-            version: 1.0.0
+            version: 1.1.0
             task: backup
         spec:
           containers:
           - name: mariadb-backup
-            image: realmic/mariadb-backup:1.0.0
+            image: realmic/mariadb-backup:1.1.0
             env:
             - name: BACKUP_HOST
               valueFrom:
